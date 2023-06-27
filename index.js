@@ -18,8 +18,8 @@ const game = {
 
   // Timer methods values
   loopDuration: 10,
-  totalTime: 100000, //init 10000
-  timeRemaining: 100000,
+  totalTime: 10000000, //init 10000
+  timeRemaining: 10000000,
   animFrameID: null,
   startTS: null,
 
@@ -55,12 +55,21 @@ const game = {
     $(".game-title").text(game.title);
     game.levelTagAnimate();
 
-    $(".mode-btn").on("click", (e) => {
-      if ($(e.target).data("mode") === "easy") {
+    // $(".mode-btn").on("click", (e) => {
+    //   if ($(e.target).data("mode") === "easy") {
+    //     game.totalLevel = 6;
+    //   } else if ($(e.target).data("mode") === "medium") {
+    //     game.totalLevel = 9;
+    //   } else if ($(e.target).data("mode") === "hard") {
+    //     game.totalLevel = 12;
+    //   }
+    // });
+    $(".btn-check").on("click", (e) => {
+      if ($(".btn-check:checked").data("mode") === "easy") {
         game.totalLevel = 6;
-      } else if ($(e.target).data("mode") === "medium") {
+      } else if ($(".btn-check:checked").data("mode") === "medium") {
         game.totalLevel = 9;
-      } else if ($(e.target).data("mode") === "hard") {
+      } else if ($(".btn-check:checked").data("mode") === "hard") {
         game.totalLevel = 12;
       }
     });
@@ -70,6 +79,11 @@ const game = {
       game.dealCards();
       game.updateClock();
     });
+  },
+
+  playSound(scene) {
+    let audio = new Audio("sounds/" + scene + ".mp3");
+    audio.play();
   },
 
   levelTagAnimate() {
@@ -178,12 +192,13 @@ const game = {
       .addClass("start-flag")
       .text("Game Start!")
       .css({
+        transform: "translateX(-150px) translateY(-220px)",
         left: "-100%",
       })
       .appendTo(".game-board")
       .animate(
         {
-          left: "30%",
+          left: "50%",
         },
         400
       );
@@ -196,6 +211,7 @@ const game = {
         300,
         () => {
           $newDiv.remove();
+          game.playSound("gamestart");
           game.startTimer();
           game.preventClicks = false;
         }
@@ -210,12 +226,13 @@ const game = {
       .addClass("clear-flag")
       .text("Board Clear!")
       .css({
+        transform: "translateX(-150px) translateY(-200px)",
         left: "-100%",
       })
       .appendTo(".game-board")
       .animate(
         {
-          left: "30%",
+          left: "50%",
         },
         400
       );
@@ -241,12 +258,13 @@ const game = {
       .addClass("strikeout-flag")
       .text("Strikeout!")
       .css({
+        transform: "translateX(-150px) translateY(-200px)",
         left: "-100%",
       })
       .appendTo(".game-board")
       .animate(
         {
-          left: "30%",
+          left: "50%",
         },
         400
       );
@@ -297,10 +315,12 @@ const game = {
   },
 
   displayCards() {
-    // setTimeout(game.startAnimation, 3000);
     game.startAnimation();
 
-    for (const num of game.cardPairs) {
+    for (let i = 0; i < game.cardPairs.length; i++) {
+      const num = game.cardPairs[i];
+      const delay = i * 50; // Adjust the delay time as needed (in milliseconds)
+
       const cardDomString = `<li class="game-board__list-item" data-num="${num}">
         <div class="front-view card-face">
           <img src="images/ball.jpeg" alt="" />
@@ -310,20 +330,21 @@ const game = {
         </div>
       </li>`;
 
-      // use jquery to insert into the DOM
-
       const $card = $(cardDomString);
       $card.css({
         position: "relative",
-        left: "-200%",
+        left: "-900%",
       });
       $(".game-board__list").append($card);
-      $card.animate(
-        {
+      game.playSound("shufflingcards");
+
+      // Use setTimeout to add delay before applying the transition
+      setTimeout(() => {
+        $card.css({
           left: 0,
-        },
-        100 // Adjust the animation speed as needed
-      );
+          // transition: "left 0.1s ease",
+        });
+      }, delay);
     }
   },
 
@@ -331,6 +352,7 @@ const game = {
     $(".game-board__list-item").on("click", (e) => {
       if (!game.preventClicks && !game.flipedCards.includes(e.target)) {
         $(e.target).addClass("flip");
+        game.playSound("clickcard");
         game.flipedCards.push(e.target);
 
         if (game.flipedCards.length === 2) {
@@ -350,7 +372,7 @@ const game = {
 
       // make matched card elements unclickable and fade out, but still keep the spaces
       $(".game-board__list-item.flip").off("click").children().fadeOut(400);
-
+      game.playSound("matched");
       game.preventClicks = false;
       game.flipedCards = [];
       // increase matched pairs
@@ -378,39 +400,42 @@ const game = {
       console.log("card not matched");
 
       setTimeout(game.deselectCards, 1000);
-      $(".game-board__list-item.flip")
-        .css("position", "relative")
-        .delay(500)
-        .animate(
-          {
-            left: "-=10px", // Move the element 10 pixels to the left
-          },
-          50
-        )
-        .animate(
-          {
-            left: "+=20px", // Move the element 20 pixels to the right
-          },
-          50
-        )
-        .animate(
-          {
-            left: "-=20px", // Move the element 20 pixels to the left
-          },
-          50
-        )
-        .animate(
-          {
-            left: "+=20px", // Move the element 20 pixels to the right
-          },
-          50
-        )
-        .animate(
-          {
-            left: "-=10px", // Move the element 10 pixels to the left
-          },
-          50
-        );
+
+      setTimeout(() => {
+        game.playSound("notmatched");
+        $(".game-board__list-item.flip")
+          .css("position", "relative")
+          .animate(
+            {
+              left: "-=10px", // Move the element 10 pixels to the left
+            },
+            50
+          )
+          .animate(
+            {
+              left: "+=20px", // Move the element 20 pixels to the right
+            },
+            50
+          )
+          .animate(
+            {
+              left: "-=20px", // Move the element 20 pixels to the left
+            },
+            50
+          )
+          .animate(
+            {
+              left: "+=20px", // Move the element 20 pixels to the right
+            },
+            50
+          )
+          .animate(
+            {
+              left: "-=10px", // Move the element 10 pixels to the left
+            },
+            50
+          );
+      }, 500);
     }
   },
 

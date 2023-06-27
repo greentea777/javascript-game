@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kablammo&family=Monoton&family=Nanum+Pen+Script&family=Special+Elite&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- Bootstrap link -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -25,33 +33,96 @@
   <body>
     <main>
       <section id="splash" class="screen">
-        <header>
+        <header class="splash__header">
           <h1 class="game-title"></h1>
           <p>Annual Championship Final Game</p>
-          <h2>Splash</h2>
         </header>
 
-        <select name="teams" id="team-select" required>
-          <option value="">--Please choose a team</option>
-          <option value="Puppy">Puppy Team</option>
-          <option value="Bunny">Bunny Team</option>
-          <option value="Joey">Joey Team</option>
-          <option value="Piggy">Piggy Team</option>
-        </select>
+        <p class="content">
+          Today is the Animals Baseball League's Annual Championship Final Game!
+          The game is in the top of the ninth inning, and The score is still
+          tied at 0-0 between both teams. As a powerful hitter, you will lead
+          your team to win the final game.
+        </p>
 
-        <button class="mode-btn" data-mode="easy">Easy</button>
-        <button class="mode-btn" data-mode="medium">Medium</button>
-        <button class="mode-btn" data-mode="hard">Hard</button>
-        <button>Help</button>
-        <button class="start-btn">Start</button>
+        <!-- <div class="splash__image-container">
+          <img class="splash__image" src="images/card-1.jpeg" alt="" />
+          <img class="splash__image" src="images/card-2.jpeg" alt="" />
+          <img class="splash__image" src="images/card-3.jpeg" alt="" />
+          <img class="splash__image" src="images/card-4.jpeg" alt="" />
+          <img class="splash__image" src="images/card-5.jpeg" alt="" />
+          <img class="splash__image" src="images/card-6.jpeg" alt="" />
+        </div> -->
+
+        <div class="game-starter">
+          <label for="team-select">Select a team!</label>
+          <select name="teams" id="team-select" required>
+            <option value="">--Please choose a team</option>
+            <option value="Puppy">Puppy Team</option>
+            <option value="Bunny">Bunny Team</option>
+            <option value="Joey">Joey Team</option>
+            <option value="Piggy">Piggy Team</option>
+          </select>
+          <button>Help</button>
+          <div>
+            <div
+              class="btn-group btn-group-lg"
+              role="group"
+              aria-label="Vertical radio toggle button group"
+            >
+              <input
+                type="radio"
+                class="btn-check"
+                name="vbtn-radio"
+                id="vbtn-radio1"
+                autocomplete="off"
+                data-mode="easy"
+                checked
+              />
+              <label class="btn btn-outline-secondary" for="vbtn-radio1"
+                >Easy</label
+              >
+              <input
+                type="radio"
+                class="btn-check"
+                name="vbtn-radio"
+                id="vbtn-radio2"
+                autocomplete="off"
+                data-mode="medium"
+              />
+              <label class="btn btn-outline-secondary" for="vbtn-radio2"
+                >Medium</label
+              >
+              <input
+                type="radio"
+                class="btn-check"
+                name="vbtn-radio"
+                id="vbtn-radio3"
+                autocomplete="off"
+                data-mode="hard"
+              />
+              <label class="btn btn-outline-secondary" for="vbtn-radio3"
+                >Hard</label
+              >
+            </div>
+            <!-- <div>
+              <button class="mode-btn" data-mode="easy">Easy</button>
+              <button class="mode-btn" data-mode="medium">Medium</button>
+              <button class="mode-btn" data-mode="hard">Hard</button>
+            </div> -->
+            <div>
+              <button class="start-btn">Start</button>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="game" class="game-board screen" style="display: none">
         <header class="game-board__header">
-          <h2 class="game-board__title">
+          <sup class="game-board__title">
             <i class="bi bi-stopwatch" focusable="false" aria-hidden="true"></i
-            >Timer
-          </h2>
+            >Timer:
+          </sup>
 
           <div class="numeric-display">
             <span class="game-board__minutes">--</span>:<span
@@ -59,8 +130,10 @@
               >--</span
             >:<span class="game-board__tenths-seconds">--</span>
           </div>
-
-          <span class="score">0</span>
+          <div class="score-container">
+            <sup>Score:</sup>
+            <span class="score">0</span>
+          </div>
 
           <div class="baseball-scoreboard">
             <div class="strike">
