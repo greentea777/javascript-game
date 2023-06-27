@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap link -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+
+    <!-- Bootstrap Icon -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="styles/normalize-fwd.css" />
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <title>Document</title>
+  </head>
+  <body>
+    <main>
+      <section id="splash" class="screen">
+        <header>
+          <h1 class="game-title"></h1>
+          <p>Annual Championship Final Game</p>
+          <h2>Splash</h2>
+        </header>
+
+        <select name="teams" id="team-select" required>
+          <option value="">--Please choose a team</option>
+          <option value="Puppy">Puppy Team</option>
+          <option value="Bunny">Bunny Team</option>
+          <option value="Joey">Joey Team</option>
+          <option value="Piggy">Piggy Team</option>
+        </select>
+
+        <button class="mode-btn" data-mode="easy">Easy</button>
+        <button class="mode-btn" data-mode="medium">Medium</button>
+        <button class="mode-btn" data-mode="hard">Hard</button>
+        <button>Help</button>
+        <button class="start-btn">Start</button>
+      </section>
+
+      <section id="game" class="game-board screen" style="display: none">
+        <header class="game-board__header">
+          <h2 class="game-board__title">
+            <i class="bi bi-stopwatch" focusable="false" aria-hidden="true"></i
+            >Timer
+          </h2>
+
+          <div class="numeric-display">
+            <span class="game-board__minutes">--</span>:<span
+              class="game-board__seconds"
+              >--</span
+            >:<span class="game-board__tenths-seconds">--</span>
+          </div>
+
+          <span class="score">0</span>
+
+          <div class="baseball-scoreboard">
+            <div class="strike">
+              <span class="status">S</span>
+              <span class="circle"></span>
+              <span class="circle"></span>
+            </div>
+            <div class="ball">
+              <span class="status">B</span>
+              <span class="circle"></span>
+              <span class="circle"></span>
+              <span class="circle"></span>
+            </div>
+            <div class="out">
+              <span class="status">O</span>
+              <span class="circle"></span>
+              <span class="circle"></span>
+            </div>
+          </div>
+        </header>
+        <div class="game-board__list-wrapper">
+          <p>Level</p>
+          <ul class="game-board__list"></ul>
+        </div>
+      </section>
+      <section
+        id="minigame"
+        class="minigame-board screen"
+        style="display: none"
+      >
+        <h2>Mini Game</h2>
+        <p class="minigame-board__dicecounter"></p>
+        <p class="baseball-score">0</p>
+
+        <div class="bases-container">
+          <div class="bases">
+            <span class="base"></span>
+            <span class="base"></span>
+            <span class="base"></span>
+            <span class="base"></span>
+          </div>
+        </div>
+
+        <div class="dice-wrapper">
+          <div class="dice">
+            <div class="side face front" data-num="1"></div>
+            <div class="side face back" data-num="6"></div>
+            <div class="side face top" data-num="5"></div>
+            <div class="side face bottom" data-num="2"></div>
+            <div class="side face right" data-num="3"></div>
+            <div class="side face left" data-num="4"></div>
+          </div>
+          <button class="roll">Roll</button>
+        </div>
+      </section>
+
+      <section id="gameover" class="screen" style="display: none">
+        <h2>Game Over</h2>
+      </section>
+    </main>
+    <!-- JQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.7.0.js"
+      integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Bootstrap -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
+    <script src="index.js"></script>
+  </body>
+</html>
