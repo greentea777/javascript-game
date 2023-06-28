@@ -18,8 +18,8 @@ const game = {
 
   // Timer methods values
   loopDuration: 10,
-  totalTime: 10000000, //init 10000
-  timeRemaining: 10000000,
+  totalTime: 200000, //init 10000
+  timeRemaining: 200000,
   animFrameID: null,
   startTS: null,
 
@@ -49,11 +49,29 @@ const game = {
     $(`#${screen}`).show();
   },
 
+  toggleRunning() {
+    game.isRunning = !game.isRunning;
+  },
+
   /* ==== Game functions ====*/
 
   init() {
     $(".game-title").text(game.title);
-    game.levelTagAnimate();
+
+    $(".pause-btn").on("click", () => {
+      if (!game.preventClicks) {
+        game.isRunning
+          ? $(".pause-btn").html(`<i class="bi bi-play-fill"></i>`)
+          : $(".pause-btn").html(`<i class="bi bi-pause-fill"></i>`);
+        game.toggleRunning();
+        game.pauseTimer();
+      }
+    });
+
+    $(".quit-btn").on("click", () => {
+      game.switchScreen("splash");
+      game.resetGame();
+    });
 
     // $(".mode-btn").on("click", (e) => {
     //   if ($(e.target).data("mode") === "easy") {
@@ -76,9 +94,21 @@ const game = {
 
     $(".start-btn").on("click", () => {
       game.switchScreen("game");
+      game.levelTagAnimate();
       game.dealCards();
       game.updateClock();
     });
+  },
+
+  resetGame() {
+    game.preventClicks = false;
+    game.isRunning = false;
+    game.strikes = 0;
+    game.level = 1;
+    game.animFrameID = null;
+    game.resetCards();
+    game.resetTimer();
+    game.player.resetScore();
   },
 
   playSound(scene) {
@@ -87,9 +117,11 @@ const game = {
   },
 
   levelTagAnimate() {
-    $(".game-board__list-wrapper p")
-      .animate({ top: "+=10px" }, 1000)
-      .animate({ top: "-=10px" }, 1000, game.levelTagAnimate);
+    if (game.currentScreen === "game") {
+      $(".game-board__list-wrapper p")
+        .animate({ top: "+=10px" }, 1000)
+        .animate({ top: "-=10px" }, 1000, game.levelTagAnimate);
+    }
   },
 
   dealCards() {
@@ -159,6 +191,7 @@ const game = {
   resetCards() {
     game.drawnCards = [];
     game.cardPairs = [];
+    game.flipedCards = [];
     game.matchedPairs = 0;
   },
 
@@ -192,7 +225,7 @@ const game = {
       .addClass("start-flag")
       .text("Game Start!")
       .css({
-        transform: "translateX(-150px) translateY(-220px)",
+        transform: "translateX(-160px) translateY(-220px)",
         left: "-100%",
       })
       .appendTo(".game-board")
@@ -226,7 +259,7 @@ const game = {
       .addClass("clear-flag")
       .text("Board Clear!")
       .css({
-        transform: "translateX(-150px) translateY(-200px)",
+        transform: "translateX(-160px) translateY(-200px)",
         left: "-100%",
       })
       .appendTo(".game-board")
@@ -258,7 +291,7 @@ const game = {
       .addClass("strikeout-flag")
       .text("Strikeout!")
       .css({
-        transform: "translateX(-150px) translateY(-200px)",
+        transform: "translateX(-160px) translateY(-200px)",
         left: "-100%",
       })
       .appendTo(".game-board")
@@ -290,12 +323,13 @@ const game = {
       .addClass("minigame-flag")
       .text("Mini Game!")
       .css({
+        transform: "translateX(-150px) translateY(-200px)",
         left: "-100%",
       })
       .appendTo(".minigame-board")
       .animate(
         {
-          left: "30%",
+          left: "50%",
         },
         400
       );
@@ -303,7 +337,7 @@ const game = {
     setTimeout(() => {
       $newDiv.animate(
         {
-          left: 9999,
+          left: "300%",
         },
         300,
         () => {
@@ -319,7 +353,7 @@ const game = {
 
     for (let i = 0; i < game.cardPairs.length; i++) {
       const num = game.cardPairs[i];
-      const delay = i * 50; // Adjust the delay time as needed (in milliseconds)
+      const delay = i * 100; // Adjust the delay time as needed (in milliseconds)
 
       const cardDomString = `<li class="game-board__list-item" data-num="${num}">
         <div class="front-view card-face">
@@ -350,7 +384,10 @@ const game = {
 
   selectCard() {
     $(".game-board__list-item").on("click", (e) => {
-      if (!game.preventClicks && !game.flipedCards.includes(e.target)) {
+      if (
+        !game.preventClicks &&
+        !game.flipedCards.includes(e.target) & game.isRunning
+      ) {
         $(e.target).addClass("flip");
         game.playSound("clickcard");
         game.flipedCards.push(e.target);
@@ -458,12 +495,14 @@ const game = {
   },
 
   startTimer() {
-    game.isRunning = true;
+    // game.isRunning = true;
+    game.toggleRunning();
     game.animationFrameLoop();
   },
 
   pauseTimer() {
-    game.isRunning = false;
+    // game.isRunning = false;
+    // game.toggleRunning();
     game.animationFrameLoop();
   },
 
@@ -541,7 +580,7 @@ const game = {
       } else {
         game.flipedCards = [];
         game.strikeOutAnimation();
-        setTimeout(game.dealCards, 1400);
+        setTimeout(game.dealCards, 2000);
       }
     } else if (elapsed >= game.loopDuration) {
       game.startTS = timestamp;
@@ -566,8 +605,9 @@ const minigame = {
   hit: null,
 
   init() {
-    // minigame.diceCounter = game.player.score;
-    minigame.diceCounter = 10;
+    minigame.diceCounter = game.player.score;
+    // minigame.diceCounter = 10;
+
     minigame.updateDicCounter();
     $(".roll").on("click", () => {
       if (minigame.diceCounter > 0) {
@@ -662,7 +702,7 @@ const minigame = {
       .addClass("hit-type")
       .text(hitType)
       .css({
-        transform: "translateX(-100px) translateY(-200px)",
+        transform: "translateX(-120px) translateY(-200px)",
         left: "-100%",
       })
       .appendTo(".minigame-board__container")
@@ -760,8 +800,8 @@ const minigame = {
 };
 
 $(game.init());
-game.switchScreen("minigame");
-minigame.init();
+// game.switchScreen("minigame");
+// minigame.init();
 
 // 增加安打動畫
 // mini game的flag跑到骰子底下
