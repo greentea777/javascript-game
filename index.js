@@ -206,7 +206,7 @@ const game = {
     setTimeout(() => {
       $newDiv.animate(
         {
-          left: 9999,
+          left: "300%",
         },
         300,
         () => {
@@ -240,7 +240,7 @@ const game = {
     setTimeout(() => {
       $newDiv.animate(
         {
-          left: 9999,
+          left: "300%",
         },
         300,
         () => {
@@ -272,7 +272,7 @@ const game = {
     setTimeout(() => {
       $newDiv.animate(
         {
-          left: 9999,
+          left: "300%",
         },
         300,
         () => {
@@ -609,26 +609,32 @@ const minigame = {
       switch (randomNum) {
         case 1:
           $(".dice").css("transform", "rotateX(0deg) rotateY(0deg)");
+          game.playSound("dicerolling2");
           minigame.handleHit();
           break;
         case 2:
           $(".dice").css("transform", "rotateX(90deg) rotateY(0deg)");
+          game.playSound("dicerolling2");
           minigame.handleHit();
           break;
         case 3:
           $(".dice").css("transform", "rotateX(0deg) rotateY(-90deg)");
+          game.playSound("dicerolling2");
           minigame.handleHit();
           break;
         case 4:
           $(".dice").css("transform", "rotateX(0deg) rotateY(90deg)");
+          game.playSound("dicerolling2");
           minigame.handleHit();
           break;
         case 5:
           $(".dice").css("transform", "rotateX(-90deg) rotateY(0deg)");
+          game.playSound("dicerolling2");
           minigame.handleHit();
           break;
         case 6:
           $(".dice").css("transform", "rotateX(180deg) rotateY(0deg)");
+          game.playSound("dicerolling2");
           minigame.handleHit();
           break;
         default:
@@ -643,10 +649,10 @@ const minigame = {
     $(".baseball-score").text(minigame.baseballScore);
     for (let i = 0; i < minigame.bases.length; i++) {
       if (minigame.bases[i] === 0) {
-        $(".base").eq(i).css("background-color", "aqua");
+        $(".base").eq(i).css("background-color", "white");
       } else if (minigame.bases[i] === 1) {
         // change colour if someone is on base
-        $(".base").eq(i).css("background-color", "orange");
+        $(".base").eq(i).css("background-color", "red");
       }
     }
   },
@@ -713,8 +719,8 @@ const minigame = {
 };
 
 $(game.init());
-// game.switchScreen("minigame");
-// minigame.init();
+game.switchScreen("minigame");
+minigame.init();
 
 // 增加安打動畫
 // mini game的flag跑到骰子底下

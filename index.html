@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Kablammo&family=Monoton&family=Nanum+Pen+Script&family=Special+Elite&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Kablammo&family=Monoton&family=Nanum+Pen+Script&family=Roboto+Slab:wght@400;700;900&family=Special+Elite&display=swap"
       rel="stylesheet"
     />
 
@@ -165,28 +165,80 @@
         style="display: none"
       >
         <h2>Mini Game</h2>
-        <p class="minigame-board__dicecounter"></p>
-        <p class="baseball-score">0</p>
 
-        <div class="bases-container">
-          <div class="bases">
-            <span class="base"></span>
-            <span class="base"></span>
-            <span class="base"></span>
-            <span class="base"></span>
+        <div class="baseball-scoretable-wrapper">
+          <table class="baseball-scoretable">
+            <thead>
+              <tr>
+                <th colspan="10">Annual Championship Final Game</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>INNING</th>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+                <td>8</td>
+                <td>9</td>
+              </tr>
+              <tr class="baseball-guest">
+                <th>GUEST</th>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+              </tr>
+              <tr class="baseball-home">
+                <th>HOME</th>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td class="baseball-score"></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="bases-container">
+            <div class="bases">
+              <span class="base"></span>
+              <span class="base"></span>
+              <span class="base"></span>
+              <span class="base"></span>
+            </div>
           </div>
         </div>
 
-        <div class="dice-wrapper">
-          <div class="dice">
-            <div class="side face front" data-num="1"></div>
-            <div class="side face back" data-num="6"></div>
-            <div class="side face top" data-num="5"></div>
-            <div class="side face bottom" data-num="2"></div>
-            <div class="side face right" data-num="3"></div>
-            <div class="side face left" data-num="4"></div>
+        <div class="minigame-board__container">
+          <div class="dice-wrapper">
+            <div class="dice-wrapper__title">
+              <span>Counter:</span>
+              <p class="minigame-board__dicecounter"></p>
+            </div>
+
+            <div class="dice">
+              <div class="side face front" data-num="1"></div>
+              <div class="side face back" data-num="6"></div>
+              <div class="side face top" data-num="5"></div>
+              <div class="side face bottom" data-num="2"></div>
+              <div class="side face right" data-num="3"></div>
+              <div class="side face left" data-num="4"></div>
+            </div>
+            <button class="roll">Roll</button>
           </div>
-          <button class="roll">Roll</button>
         </div>
       </section>
 
