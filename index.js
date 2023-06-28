@@ -657,33 +657,74 @@ const minigame = {
     }
   },
 
+  hitTypeAnimation(hitType) {
+    const $newDiv = $("<div>")
+      .addClass("hit-type")
+      .text(hitType)
+      .css({
+        transform: "translateX(-100px) translateY(-200px)",
+        left: "-100%",
+      })
+      .appendTo(".minigame-board__container")
+      .animate(
+        {
+          left: "50%",
+        },
+        400
+      );
+
+    setTimeout(() => {
+      $newDiv.animate(
+        {
+          left: "300%",
+        },
+        300,
+        () => {
+          $newDiv.remove();
+        }
+      );
+    }, 1000);
+  },
+
   handleHit() {
     if (minigame.diceNum === 2 || minigame.diceNum === 1) {
-      minigame.hit = "1B";
+      minigame.hit = "Single";
       minigame.calculateScore(minigame.hit);
-      minigame.updateBaseballScore();
+      minigame.hitTypeAnimation(minigame.hit);
+
       setTimeout(() => {
+        game.playSound("regularhit");
+        minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
       }, 1000);
     } else if (minigame.diceNum === 4 || minigame.diceNum === 3) {
-      minigame.hit = "2B";
+      minigame.hit = "Double";
       minigame.calculateScore(minigame.hit);
-      minigame.updateBaseballScore();
+      minigame.hitTypeAnimation(minigame.hit);
+
       setTimeout(() => {
+        game.playSound("regularhit");
+        minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
       }, 1000);
     } else if (minigame.diceNum === 5) {
-      minigame.hit = "3B";
+      minigame.hit = "Triple";
       minigame.calculateScore(minigame.hit);
-      minigame.updateBaseballScore();
+      minigame.hitTypeAnimation(minigame.hit);
+
       setTimeout(() => {
+        game.playSound("regularhit");
+        minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
       }, 1000);
     } else if (minigame.diceNum === 6) {
-      minigame.hit = "HR";
+      minigame.hit = "HOME RUN";
       minigame.calculateScore(minigame.hit);
-      minigame.updateBaseballScore();
+      minigame.hitTypeAnimation(minigame.hit);
+
       setTimeout(() => {
+        game.playSound("homerunhit");
+        minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
       }, 1000);
     }
@@ -691,25 +732,25 @@ const minigame = {
 
   // This calculateScore function refers to chatGPT
   calculateScore(hit) {
-    if (hit === "1B") {
+    if (hit === "Single") {
       // 一壘安打
       minigame.baseballScore += minigame.bases[2]; // 加上本壘跑者得分
       minigame.bases[2] = minigame.bases[1]; // 三壘跑者移到本壘
       minigame.bases[1] = minigame.bases[0]; // 二壘跑者移到三壘
       minigame.bases[0] = 1; // 一壘放置新跑者
-    } else if (hit === "2B") {
+    } else if (hit === "Double") {
       // 二壘安打
       minigame.baseballScore += minigame.bases[2] + minigame.bases[1]; // 加上三壘和二壘跑者得分
       minigame.bases[2] = minigame.bases[0]; // 一壘跑者移到本壘
       minigame.bases[1] = 1; // 二壘放置新跑者
       minigame.bases[0] = 0; // 清空一壘
-    } else if (hit === "3B") {
+    } else if (hit === "Triple") {
       // 三壘安打
       minigame.baseballScore +=
         minigame.bases[2] + minigame.bases[1] + minigame.bases[0]; // 加上三壘、二壘和一壘跑者得分
       minigame.bases[2] = 1; // 三壘放置新跑者
       minigame.bases[1] = minigame.bases[0] = 0; // 清空二壘和一壘
-    } else if (hit === "HR") {
+    } else if (hit === "HOME RUN") {
       // 全壘打
       minigame.baseballScore +=
         minigame.bases[2] + minigame.bases[1] + minigame.bases[0] + 1; // 加上所有跑者和自己的得分
