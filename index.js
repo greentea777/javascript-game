@@ -18,8 +18,8 @@ const game = {
 
   // Timer methods values
   loopDuration: 10,
-  totalTime: 200000, //init 10000
-  timeRemaining: 200000,
+  totalTime: 10000, //init 10000
+  timeRemaining: 10000,
   animFrameID: null,
   startTS: null,
 
@@ -59,6 +59,7 @@ const game = {
     $(".game-title").text(game.title);
 
     $(".pause-btn").on("click", () => {
+      // prevent click till animation done
       if (!game.preventClicks) {
         game.isRunning
           ? $(".pause-btn").html(`<i class="bi bi-play-fill"></i>`)
@@ -68,20 +69,20 @@ const game = {
       }
     });
 
-    $(".quit-btn").on("click", () => {
-      game.switchScreen("splash");
+    $(".playagain-btn").on("click", () => {
+      game.switchScreen("game");
       game.resetGame();
+      game.dealCards();
     });
 
-    // $(".mode-btn").on("click", (e) => {
-    //   if ($(e.target).data("mode") === "easy") {
-    //     game.totalLevel = 6;
-    //   } else if ($(e.target).data("mode") === "medium") {
-    //     game.totalLevel = 9;
-    //   } else if ($(e.target).data("mode") === "hard") {
-    //     game.totalLevel = 12;
-    //   }
-    // });
+    $(".quit-btn").on("click", () => {
+      // prevent click till animation done
+      if (!game.preventClicks) {
+        game.switchScreen("splash");
+        game.resetGame();
+      }
+    });
+
     $(".btn-check").on("click", (e) => {
       if ($(".btn-check:checked").data("mode") === "easy") {
         game.totalLevel = 6;
@@ -109,6 +110,10 @@ const game = {
     game.resetCards();
     game.resetTimer();
     game.player.resetScore();
+    $(".out span:not(.status)").css("background-color", "gray");
+    minigame.baseballScore = 0;
+    minigame.bases = [0, 0, 0];
+    minigame.updateBaseballScore();
   },
 
   playSound(scene) {
@@ -151,7 +156,7 @@ const game = {
       case 2:
       case 3:
         game.numOfPairs = 3;
-        game.totalTime = 10000 + 100000;
+        game.totalTime = 10000;
         game.updateGridTemplate(game.numOfPairs);
         break;
       case 4:
@@ -323,7 +328,7 @@ const game = {
       .addClass("minigame-flag")
       .text("Mini Game!")
       .css({
-        transform: "translateX(-150px) translateY(-200px)",
+        transform: "translateX(-160px) translateY(-400px)",
         left: "-100%",
       })
       .appendTo(".minigame-board")
@@ -376,7 +381,7 @@ const game = {
       setTimeout(() => {
         $card.css({
           left: 0,
-          // transition: "left 0.1s ease",
+          transition: "left 0.1s ease",
         });
       }, delay);
     }
@@ -386,7 +391,8 @@ const game = {
     $(".game-board__list-item").on("click", (e) => {
       if (
         !game.preventClicks &&
-        !game.flipedCards.includes(e.target) & game.isRunning
+        !game.flipedCards.includes(e.target) &&
+        game.isRunning
       ) {
         $(e.target).addClass("flip");
         game.playSound("clickcard");
@@ -440,6 +446,7 @@ const game = {
 
       setTimeout(() => {
         game.playSound("notmatched");
+        $(".game-board__list-item.flip").css("transition", "none");
         $(".game-board__list-item.flip")
           .css("position", "relative")
           .animate(
@@ -571,7 +578,8 @@ const game = {
             game.miniGameAnimation();
           }, 1000);
         } else {
-          game.switchScreen("gameover");
+          game.playSound("gameover");
+          setTimeout(() => game.switchScreen("gameover"), 3000);
         }
 
         // game.player.score > 0
@@ -606,11 +614,13 @@ const minigame = {
 
   init() {
     minigame.diceCounter = game.player.score;
-    // minigame.diceCounter = 10;
+    minigame.diceCounter = 1;
 
     minigame.updateDicCounter();
     $(".roll").on("click", () => {
       if (minigame.diceCounter > 0) {
+        minigame.diceCounter--;
+        minigame.updateDicCounter();
         // Prevent double click
         $(".roll").attr("disabled", true);
         // dice face back to 1
@@ -627,9 +637,6 @@ const minigame = {
   },
 
   randomDice() {
-    minigame.diceCounter--;
-    minigame.updateDicCounter();
-
     const randomNum = Math.floor(Math.random() * 6 + 1);
     minigame.rollDice(randomNum);
   },
@@ -685,8 +692,22 @@ const minigame = {
 
   // Baseball functions
 
+  handleGameResult() {
+    if (minigame.diceCounter === 0) {
+      if (minigame.baseballScore > 5) {
+        console.log("Big Win");
+      } else if (minigame.baseballScore <= 5 && minigame.baseballScore > 0) {
+        console.log("Win");
+      } else if (minigame.baseballScore === 0) {
+        $(".baseball-score").text(minigame.baseballScore);
+        console.log("try again");
+      }
+    }
+  },
+
   updateBaseballScore() {
-    $(".baseball-score").text(minigame.baseballScore);
+    if (minigame.baseballScore > 0)
+      $(".baseball-score").text(minigame.baseballScore);
     for (let i = 0; i < minigame.bases.length; i++) {
       if (minigame.bases[i] === 0) {
         $(".base").eq(i).css("background-color", "white");
@@ -736,6 +757,7 @@ const minigame = {
         game.playSound("regularhit");
         minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
+        minigame.handleGameResult();
       }, 1000);
     } else if (minigame.diceNum === 4 || minigame.diceNum === 3) {
       minigame.hit = "Double";
@@ -746,6 +768,7 @@ const minigame = {
         game.playSound("regularhit");
         minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
+        minigame.handleGameResult();
       }, 1000);
     } else if (minigame.diceNum === 5) {
       minigame.hit = "Triple";
@@ -756,6 +779,7 @@ const minigame = {
         game.playSound("regularhit");
         minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
+        minigame.handleGameResult();
       }, 1000);
     } else if (minigame.diceNum === 6) {
       minigame.hit = "HOME RUN";
@@ -766,6 +790,7 @@ const minigame = {
         game.playSound("homerunhit");
         minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
+        minigame.handleGameResult();
       }, 1000);
     }
   },
@@ -773,25 +798,25 @@ const minigame = {
   // This calculateScore function refers to chatGPT
   calculateScore(hit) {
     if (hit === "Single") {
-      // 一壘安打
+      // Single hit
       minigame.baseballScore += minigame.bases[2]; // 加上本壘跑者得分
       minigame.bases[2] = minigame.bases[1]; // 三壘跑者移到本壘
       minigame.bases[1] = minigame.bases[0]; // 二壘跑者移到三壘
       minigame.bases[0] = 1; // 一壘放置新跑者
     } else if (hit === "Double") {
-      // 二壘安打
+      // Double hit
       minigame.baseballScore += minigame.bases[2] + minigame.bases[1]; // 加上三壘和二壘跑者得分
       minigame.bases[2] = minigame.bases[0]; // 一壘跑者移到本壘
       minigame.bases[1] = 1; // 二壘放置新跑者
       minigame.bases[0] = 0; // 清空一壘
     } else if (hit === "Triple") {
-      // 三壘安打
+      // Triple hit
       minigame.baseballScore +=
         minigame.bases[2] + minigame.bases[1] + minigame.bases[0]; // 加上三壘、二壘和一壘跑者得分
       minigame.bases[2] = 1; // 三壘放置新跑者
       minigame.bases[1] = minigame.bases[0] = 0; // 清空二壘和一壘
     } else if (hit === "HOME RUN") {
-      // 全壘打
+      // Home run
       minigame.baseballScore +=
         minigame.bases[2] + minigame.bases[1] + minigame.bases[0] + 1; // 加上所有跑者和自己的得分
       minigame.bases[2] = minigame.bases[1] = minigame.bases[0] = 0; // 清空所有壘包
@@ -799,9 +824,10 @@ const minigame = {
   },
 };
 
-$(game.init());
-// game.switchScreen("minigame");
+$(() => {
+  game.init();
+  minigame.init();
+});
+game.switchScreen("minigame");
+// game.switchScreen("gameover");
 // minigame.init();
-
-// 增加安打動畫
-// mini game的flag跑到骰子底下

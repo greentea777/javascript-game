@@ -35,6 +35,7 @@
       <section id="splash" class="screen">
         <header class="splash__header">
           <h1 class="game-title"></h1>
+
           <p>Annual Championship Final Game</p>
         </header>
 
@@ -63,7 +64,9 @@
             <option value="Joey">Joey Team</option>
             <option value="Piggy">Piggy Team</option>
           </select>
-          <button>Help</button>
+          <button class="help-btn button">
+            <i class="bi bi-question-lg"></i>
+          </button>
           <div>
             <div
               class="btn-group btn-group-lg"
@@ -90,7 +93,7 @@
                 autocomplete="off"
                 data-mode="medium"
               />
-              <label class="btn btn-outline-secondary" for="vbtn-radio2"
+              <label class="btn btn-outline-success" for="vbtn-radio2"
                 >Medium</label
               >
               <input
@@ -101,10 +104,11 @@
                 autocomplete="off"
                 data-mode="hard"
               />
-              <label class="btn btn-outline-secondary" for="vbtn-radio3"
+              <label class="btn btn-outline-danger" for="vbtn-radio3"
                 >Hard</label
               >
             </div>
+
             <!-- <div>
               <button class="mode-btn" data-mode="easy">Easy</button>
               <button class="mode-btn" data-mode="medium">Medium</button>
@@ -154,10 +158,10 @@
             </div>
           </div>
 
-          <button class="pause-btn">
+          <button class="pause-btn button">
             <i class="bi bi-pause-fill"></i>
           </button>
-          <button class="quit-btn">
+          <button class="quit-btn button">
             <i class="bi bi-box-arrow-left"></i>
           </button>
         </header>
@@ -173,7 +177,7 @@
       >
         <div class="minigame-board__title">
           <h2>Mini Game</h2>
-          <button class="quit-btn">
+          <button class="quit-btn button">
             <i class="bi bi-box-arrow-left"></i>
           </button>
         </div>
@@ -254,8 +258,21 @@
         </div>
       </section>
 
-      <section id="gameover" class="screen" style="display: none">
+      <section id="gameover" class="screen gameover" style="display: none">
         <h2>Game Over</h2>
+        <p>
+          It's sad that you were unable to lead the team to win in this game;
+          let's give it another shot.
+        </p>
+
+        <div class="gameover__btn-container">
+          <button class="playagain-btn button">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+          <button class="quit-btn button">
+            <i class="bi bi-box-arrow-left"></i>
+          </button>
+        </div>
       </section>
     </main>
     <!-- JQuery -->
