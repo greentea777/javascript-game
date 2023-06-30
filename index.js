@@ -114,6 +114,7 @@ const game = {
     minigame.baseballScore = 0;
     minigame.bases = [0, 0, 0];
     minigame.updateBaseballScore();
+    $(".baseball-score").text("");
   },
 
   playSound(scene) {
@@ -581,10 +582,6 @@ const game = {
           game.playSound("gameover");
           setTimeout(() => game.switchScreen("gameover"), 3000);
         }
-
-        // game.player.score > 0
-        //   ? game.switchScreen("minigame")
-        //   : game.switchScreen("gameover");
       } else {
         game.flipedCards = [];
         game.strikeOutAnimation();
@@ -614,20 +611,32 @@ const minigame = {
 
   init() {
     minigame.diceCounter = game.player.score;
-    minigame.diceCounter = 1;
-
+    // minigame.diceCounter = 2;
     minigame.updateDicCounter();
-    $(".roll").on("click", () => {
-      if (minigame.diceCounter > 0) {
-        minigame.diceCounter--;
-        minigame.updateDicCounter();
-        // Prevent double click
-        $(".roll").attr("disabled", true);
-        // dice face back to 1
-        $(".dice").removeAttr("style");
-        setTimeout(minigame.randomDice, 550);
-      }
-    });
+    // $(".roll").on("click", () => {
+    //   if (minigame.diceCounter > 0) {
+    //     // Prevent double click
+    //     $(".roll").attr("disabled", true);
+    //     // dice face back to 1
+    //     $(".dice").removeAttr("style");
+    //     minigame.diceCounter--;
+    //     minigame.updateDicCounter();
+    //     setTimeout(minigame.randomDice, 550);
+    //   }
+    // });
+    $(".roll")
+      .off("click")
+      .on("click", () => {
+        if (minigame.diceCounter > 0) {
+          // Prevent double click
+          $(".roll").attr("disabled", true);
+          // dice face back to 1
+          $(".dice").removeAttr("style");
+          minigame.diceCounter--;
+          minigame.updateDicCounter();
+          setTimeout(minigame.randomDice, 550);
+        }
+      });
   },
 
   // Dice function
@@ -692,15 +701,23 @@ const minigame = {
 
   // Baseball functions
 
-  handleGameResult() {
+  handleBaseballGameResult() {
     if (minigame.diceCounter === 0) {
-      if (minigame.baseballScore > 5) {
-        console.log("Big Win");
-      } else if (minigame.baseballScore <= 5 && minigame.baseballScore > 0) {
+      if (minigame.baseballScore > 0) {
         console.log("Win");
+        $(".gameover p").text(
+          "Congratulations on leading your team to the Animals Baseball League's Annual Championship."
+        );
+        game.playSound("wingame");
+        setTimeout(() => game.switchScreen("gameover"), 2000);
       } else if (minigame.baseballScore === 0) {
         $(".baseball-score").text(minigame.baseballScore);
         console.log("try again");
+        $(".gameover p").text(
+          "It's sad that you were unable to lead the team to win in this game; let's give it another shot."
+        );
+        game.playSound("gameover");
+        setTimeout(() => game.switchScreen("gameover"), 3000);
       }
     }
   },
@@ -757,7 +774,7 @@ const minigame = {
         game.playSound("regularhit");
         minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
-        minigame.handleGameResult();
+        minigame.handleBaseballGameResult();
       }, 1000);
     } else if (minigame.diceNum === 4 || minigame.diceNum === 3) {
       minigame.hit = "Double";
@@ -768,7 +785,7 @@ const minigame = {
         game.playSound("regularhit");
         minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
-        minigame.handleGameResult();
+        minigame.handleBaseballGameResult();
       }, 1000);
     } else if (minigame.diceNum === 5) {
       minigame.hit = "Triple";
@@ -779,7 +796,7 @@ const minigame = {
         game.playSound("regularhit");
         minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
-        minigame.handleGameResult();
+        minigame.handleBaseballGameResult();
       }, 1000);
     } else if (minigame.diceNum === 6) {
       minigame.hit = "HOME RUN";
@@ -790,7 +807,7 @@ const minigame = {
         game.playSound("homerunhit");
         minigame.updateBaseballScore();
         $(".roll").removeAttr("disabled");
-        minigame.handleGameResult();
+        minigame.handleBaseballGameResult();
       }, 1000);
     }
   },
@@ -799,35 +816,35 @@ const minigame = {
   calculateScore(hit) {
     if (hit === "Single") {
       // Single hit
-      minigame.baseballScore += minigame.bases[2]; // 加上本壘跑者得分
-      minigame.bases[2] = minigame.bases[1]; // 三壘跑者移到本壘
-      minigame.bases[1] = minigame.bases[0]; // 二壘跑者移到三壘
-      minigame.bases[0] = 1; // 一壘放置新跑者
+      minigame.baseballScore += minigame.bases[2]; // Third base to home base
+      minigame.bases[2] = minigame.bases[1]; // Second to third
+      minigame.bases[1] = minigame.bases[0]; // First to second
+      minigame.bases[0] = 1; // First base
     } else if (hit === "Double") {
       // Double hit
-      minigame.baseballScore += minigame.bases[2] + minigame.bases[1]; // 加上三壘和二壘跑者得分
-      minigame.bases[2] = minigame.bases[0]; // 一壘跑者移到本壘
-      minigame.bases[1] = 1; // 二壘放置新跑者
-      minigame.bases[0] = 0; // 清空一壘
+      minigame.baseballScore += minigame.bases[2] + minigame.bases[1];
+      minigame.bases[2] = minigame.bases[0];
+      minigame.bases[1] = 1;
+      minigame.bases[0] = 0;
     } else if (hit === "Triple") {
       // Triple hit
       minigame.baseballScore +=
-        minigame.bases[2] + minigame.bases[1] + minigame.bases[0]; // 加上三壘、二壘和一壘跑者得分
-      minigame.bases[2] = 1; // 三壘放置新跑者
-      minigame.bases[1] = minigame.bases[0] = 0; // 清空二壘和一壘
+        minigame.bases[2] + minigame.bases[1] + minigame.bases[0];
+      minigame.bases[2] = 1;
+      minigame.bases[1] = minigame.bases[0] = 0;
     } else if (hit === "HOME RUN") {
       // Home run
       minigame.baseballScore +=
-        minigame.bases[2] + minigame.bases[1] + minigame.bases[0] + 1; // 加上所有跑者和自己的得分
-      minigame.bases[2] = minigame.bases[1] = minigame.bases[0] = 0; // 清空所有壘包
+        minigame.bases[2] + minigame.bases[1] + minigame.bases[0] + 1;
+      minigame.bases[2] = minigame.bases[1] = minigame.bases[0] = 0;
     }
   },
 };
 
 $(() => {
   game.init();
-  minigame.init();
+  // minigame.init();
 });
-game.switchScreen("minigame");
+// game.switchScreen("minigame");
 // game.switchScreen("gameover");
 // minigame.init();
