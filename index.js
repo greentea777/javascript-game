@@ -5,11 +5,12 @@ const game = {
   preventClicks: false,
   isRunning: false,
   currentScreen: null,
-  numOfPairs: 3, // init null
+  numOfPairs: 3, // init 3
   matchedPairs: 0,
   strikes: 0,
   level: 1,
   totalLevel: 6,
+  audio: null,
 
   // Arrays for game
   drawnCards: [],
@@ -43,16 +44,6 @@ const game = {
     },
   },
 
-  switchScreen(screen = "splash") {
-    this.currentScreen = screen;
-    $(".screen").hide();
-    $(`#${screen}`).show();
-  },
-
-  toggleRunning() {
-    game.isRunning = !game.isRunning;
-  },
-
   /* ==== Game functions ====*/
 
   init() {
@@ -73,6 +64,7 @@ const game = {
       game.switchScreen("game");
       game.resetGame();
       game.dealCards();
+      game.pauseSound();
     });
 
     $(".quit-btn").on("click", () => {
@@ -80,6 +72,7 @@ const game = {
       if (!game.preventClicks) {
         game.switchScreen("splash");
         game.resetGame();
+        game.pauseSound();
       }
     });
 
@@ -101,6 +94,16 @@ const game = {
     });
   },
 
+  switchScreen(screen = "splash") {
+    this.currentScreen = screen;
+    $(".screen").hide();
+    $(`#${screen}`).show();
+  },
+
+  toggleRunning() {
+    game.isRunning = !game.isRunning;
+  },
+
   resetGame() {
     game.preventClicks = false;
     game.isRunning = false;
@@ -108,6 +111,8 @@ const game = {
     game.level = 1;
     game.animFrameID = null;
     game.numOfPairs = 3;
+    game.totalTime = 10000;
+    game.updateGridTemplate(game.numOfPairs);
     game.resetCards();
     game.resetTimer();
     game.player.resetScore();
@@ -115,12 +120,16 @@ const game = {
     minigame.baseballScore = 0;
     minigame.bases = [0, 0, 0];
     minigame.updateBaseballScore();
-    $(".baseball-score").text("");
   },
 
+  // Audio control
   playSound(scene) {
-    let audio = new Audio("sounds/" + scene + ".mp3");
-    audio.play();
+    game.audio = new Audio("sounds/" + scene + ".mp3");
+    game.audio.play();
+  },
+
+  pauseSound() {
+    game.audio.pause();
   },
 
   levelTagAnimate() {
@@ -129,16 +138,6 @@ const game = {
         .animate({ top: "+=10px" }, 1000)
         .animate({ top: "-=10px" }, 1000, game.levelTagAnimate);
     }
-  },
-
-  dealCards() {
-    game.resetGameboard();
-    game.resetCards();
-    game.drawCards();
-    game.pairCards();
-    game.shuffleCards();
-    game.displayCards();
-    game.selectCard();
   },
 
   updateGridTemplate(numOfPairs) {
@@ -189,41 +188,7 @@ const game = {
     }
   },
 
-  /* Clear the DOM for a new round */
-  resetGameboard() {
-    $(".game-board__list").html("");
-  },
-
-  /* Reset the card Arrays to empty  */
-  resetCards() {
-    game.drawnCards = [];
-    game.cardPairs = [];
-    game.flipedCards = [];
-    game.matchedPairs = 0;
-  },
-
-  drawCards() {
-    for (let i = 1; i <= game.numOfPairs; i++) {
-      let randomNum = Math.floor(Math.random() * 12 + 1);
-      // Draw numOfPairs numbers and push into drawnCards, if drawnCards array has same num, re random a number
-      while (game.drawnCards.includes(randomNum)) {
-        randomNum = Math.floor(Math.random() * 12 + 1);
-      }
-      game.drawnCards.push(randomNum);
-    }
-  },
-
-  pairCards() {
-    // clone drawn cards
-    game.cardPairs = game.drawnCards.concat(game.drawnCards);
-    console.log(game.cardPairs);
-  },
-
-  shuffleCards() {
-    game.cardPairs = game.cardPairs.sort(() => Math.random() - 0.5);
-    console.log(game.cardPairs);
-  },
-
+  // Animation control
   startAnimation() {
     game.preventClicks = true;
     $(".game-board__list-wrapper p").text(`Level ${game.level}`);
@@ -355,6 +320,51 @@ const game = {
     }, 1000);
   },
 
+  dealCards() {
+    game.resetGameboard();
+    game.resetCards();
+    game.drawCards();
+    game.pairCards();
+    game.shuffleCards();
+    game.displayCards();
+    game.selectCard();
+  },
+
+  /* Clear the DOM for a new round */
+  resetGameboard() {
+    $(".game-board__list").html("");
+  },
+
+  /* Reset the card Arrays to empty  */
+  resetCards() {
+    game.drawnCards = [];
+    game.cardPairs = [];
+    game.flipedCards = [];
+    game.matchedPairs = 0;
+  },
+
+  drawCards() {
+    for (let i = 1; i <= game.numOfPairs; i++) {
+      let randomNum = Math.floor(Math.random() * 12 + 1);
+      // Draw numOfPairs numbers and push into drawnCards, if drawnCards array has same num, re random a number
+      while (game.drawnCards.includes(randomNum)) {
+        randomNum = Math.floor(Math.random() * 12 + 1);
+      }
+      game.drawnCards.push(randomNum);
+    }
+  },
+
+  pairCards() {
+    // clone drawn cards
+    game.cardPairs = game.drawnCards.concat(game.drawnCards);
+    console.log(game.cardPairs);
+  },
+
+  shuffleCards() {
+    game.cardPairs = game.cardPairs.sort(() => Math.random() - 0.5);
+    console.log(game.cardPairs);
+  },
+
   displayCards() {
     game.startAnimation();
 
@@ -429,6 +439,9 @@ const game = {
         game.player.updateScore();
         if (game.level > game.totalLevel) {
           // game.switchScreen("minigame");
+          game.isRunning = false;
+          window.cancelAnimationFrame(game.animFrameID);
+
           minigame.init();
           // game.miniGameAnimation();
           setTimeout(() => {
@@ -714,15 +727,18 @@ const minigame = {
         );
         game.playSound("wingame");
         game.resetGame();
-        setTimeout(() => game.switchScreen("gameover"), 2000);
+        setTimeout(() => {
+          game.switchScreen("gameover");
+          $(".baseball-score").text("");
+        }, 2000);
       } else if (minigame.baseballScore === 0) {
         $(".baseball-score").text(minigame.baseballScore);
         console.log("try again");
-        game.resetGame();
-
         game.playSound("gameover");
+        game.resetGame();
         setTimeout(() => {
           game.switchScreen("gameover");
+          $(".baseball-score").text("");
           $(".gameover p").text(
             "It's sad that you were unable to lead the team to win in this game; let's give it another shot."
           );
