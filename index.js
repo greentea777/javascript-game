@@ -61,10 +61,10 @@ const game = {
     });
 
     $(".playagain-btn").on("click", () => {
+      game.pauseSound();
       game.switchScreen("game");
       game.resetGame();
       game.dealCards();
-      game.pauseSound();
     });
 
     $(".quit-btn").on("click", () => {
@@ -593,11 +593,15 @@ const game = {
             game.miniGameAnimation();
           }, 1000);
         } else {
+          game.preventClicks = true;
           game.playSound("gameover");
           $(".gameover p").text(
             "It's sad that you were unable to lead the team to win in this game; let's give it another shot."
           );
-          setTimeout(() => game.switchScreen("gameover"), 3000);
+          setTimeout(() => {
+            game.switchScreen("gameover");
+            game.preventClicks = false;
+          }, 3000);
         }
       } else {
         game.flipedCards = [];
@@ -725,20 +729,24 @@ const minigame = {
         $(".gameover p").text(
           "Congratulations on leading your team to the Animals Baseball League's Annual Championship."
         );
+        $(".baseball-home-score").text("0");
         game.playSound("wingame");
         game.resetGame();
         setTimeout(() => {
           game.switchScreen("gameover");
           $(".baseball-score").text("");
+          $(".baseball-home-score").text("");
         }, 2000);
       } else if (minigame.baseballScore === 0) {
         $(".baseball-score").text(minigame.baseballScore);
         console.log("try again");
         game.playSound("gameover");
+        $(".baseball-home-score").text("1");
         game.resetGame();
         setTimeout(() => {
           game.switchScreen("gameover");
           $(".baseball-score").text("");
+          $(".baseball-home-score").text("");
           $(".gameover p").text(
             "It's sad that you were unable to lead the team to win in this game; let's give it another shot."
           );
