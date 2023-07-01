@@ -107,6 +107,7 @@ const game = {
     game.strikes = 0;
     game.level = 1;
     game.animFrameID = null;
+    game.numOfPairs = 3;
     game.resetCards();
     game.resetTimer();
     game.player.resetScore();
@@ -164,25 +165,25 @@ const game = {
       case 5:
       case 6:
         game.numOfPairs = 4;
-        game.totalTime = 13000 + 100000;
+        game.totalTime = 13000;
         game.updateGridTemplate(game.numOfPairs);
         break;
       case 7:
       case 8:
       case 9:
         game.numOfPairs = 6;
-        game.totalTime = 20000 + 100000;
+        game.totalTime = 20000;
         game.updateGridTemplate(game.numOfPairs - 2);
         break;
       case 10:
       case 11:
         game.numOfPairs = 8;
-        game.totalTime = 25000 + 100000;
+        game.totalTime = 25000;
         game.updateGridTemplate(game.numOfPairs - 4);
         break;
       case 12:
         game.numOfPairs = 10;
-        game.totalTime = 35000 + 100000;
+        game.totalTime = 35000;
         game.updateGridTemplate(game.numOfPairs - 5);
         break;
     }
@@ -580,6 +581,9 @@ const game = {
           }, 1000);
         } else {
           game.playSound("gameover");
+          $(".gameover p").text(
+            "It's sad that you were unable to lead the team to win in this game; let's give it another shot."
+          );
           setTimeout(() => game.switchScreen("gameover"), 3000);
         }
       } else {
@@ -709,15 +713,20 @@ const minigame = {
           "Congratulations on leading your team to the Animals Baseball League's Annual Championship."
         );
         game.playSound("wingame");
+        game.resetGame();
         setTimeout(() => game.switchScreen("gameover"), 2000);
       } else if (minigame.baseballScore === 0) {
         $(".baseball-score").text(minigame.baseballScore);
         console.log("try again");
-        $(".gameover p").text(
-          "It's sad that you were unable to lead the team to win in this game; let's give it another shot."
-        );
+        game.resetGame();
+
         game.playSound("gameover");
-        setTimeout(() => game.switchScreen("gameover"), 3000);
+        setTimeout(() => {
+          game.switchScreen("gameover");
+          $(".gameover p").text(
+            "It's sad that you were unable to lead the team to win in this game; let's give it another shot."
+          );
+        }, 3000);
       }
     }
   },
