@@ -627,3 +627,26 @@ h2 {
   border-color: black;
   margin: 1rem;
 }
+
+/* ==== Modal ==== */
+
+.modal-body {
+  padding: 1rem 2rem;
+}
+
+.modal p {
+  font-size: 1.5rem;
+}
+
+.modal table {
+  margin: 0 auto 2rem;
+  border: 2px solid black;
+  text-align: center;
+}
+
+.modal table th,
+.modal table td {
+  padding: 0.5rem 1rem;
+  border: 1px solid black;
+  width: 10rem;
+}

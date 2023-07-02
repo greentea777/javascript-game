@@ -4,6 +4,8 @@ const game = {
   title: "Animals Baseball League",
   preventClicks: false,
   isRunning: false,
+
+  wasRunning: false,
   currentScreen: null,
   numOfPairs: 3, // init 3
   matchedPairs: 0,
@@ -28,6 +30,7 @@ const game = {
   $min: $(".game-board__minutes"),
   $sec: $(".game-board__seconds"),
   $tenthsSec: $(".game-board__tenths-seconds"),
+  quitModalElement: $("#quitModal"),
 
   // Player
   player: {
@@ -67,16 +70,51 @@ const game = {
       game.dealCards();
     });
 
+    // $(".quit-btn").on("click", () => {
+    //   // prevent click till animation done
+    //   if (!game.preventClicks) {
+    //     game.switchScreen("splash");
+    //     game.resetGame();
+    //     game.pauseSound();
+    //   }
+    // });
+
     $(".quit-btn").on("click", () => {
-      // prevent click till animation done
-      if (!game.preventClicks) {
+      let myModal = new bootstrap.Modal(game.quitModalElement);
+
+      if (game.currentScreen === "game" && !game.preventClicks) {
+        // When user clicks the quit button and on game section, the game is paused, the game was not running
+        game.wasRunning = game.isRunning;
+        game.isRunning = false; // On game screen, nomatter the game is running or not, must pause the game when click the quit button
+        myModal.show(); // show the warning message
+        game.pauseTimer();
+        game.pauseSound();
+      } else if (
+        game.currentScreen === "minigame" ||
+        game.currentScreen === "gameover"
+      ) {
         game.switchScreen("splash");
         game.resetGame();
         game.pauseSound();
       }
     });
 
-    $(".btn-check").on("click", (e) => {
+    $(".quit-no-btn").on("click", () => {
+      // if the game was running, toggle isRunning back to true
+      if (game.wasRunning) {
+        game.toggleRunning();
+        game.pauseTimer();
+      }
+    });
+
+    $(".quit-yes-btn").on("click", () => {
+      // quit the game and reset all the values
+      game.switchScreen("splash");
+      game.resetGame();
+      game.pauseSound();
+    });
+
+    $(".btn-check").on("click", () => {
       if ($(".btn-check:checked").data("mode") === "easy") {
         game.totalLevel = 6;
       } else if ($(".btn-check:checked").data("mode") === "medium") {
@@ -101,12 +139,14 @@ const game = {
   },
 
   toggleRunning() {
+    game.wasRunning = game.isRunning;
     game.isRunning = !game.isRunning;
   },
 
   resetGame() {
     game.preventClicks = false;
     game.isRunning = false;
+    game.wasRunning = false;
     game.strikes = 0;
     game.level = 1;
     game.animFrameID = null;
@@ -881,3 +921,10 @@ $(() => {
 // game.switchScreen("minigame");
 // game.switchScreen("gameover");
 // minigame.init();
+
+// var myModalElement = document.getElementById("helpModal");
+// var myModal = new bootstrap.Modal(myModalElement);
+
+// $(".help-btn").on("click", () => {
+//   myModal.show();
+// });
