@@ -4,7 +4,6 @@ const game = {
   title: "Animals Baseball League",
   preventClicks: false,
   isRunning: false,
-
   wasRunning: false,
   currentScreen: null,
   numOfPairs: 3, // init 3
@@ -922,8 +921,8 @@ $(() => {
 // game.switchScreen("gameover");
 // minigame.init();
 
-// var myModalElement = document.getElementById("helpModal");
-// var myModal = new bootstrap.Modal(myModalElement);
+// let myModalElement = document.getElementById("helpModal");
+// let myModal = new bootstrap.Modal(myModalElement);
 
 // $(".help-btn").on("click", () => {
 //   myModal.show();
