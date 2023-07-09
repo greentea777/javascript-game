@@ -898,9 +898,9 @@ $(() => {
   game.init();
   // minigame.init();
 });
-game.switchScreen("minigame");
+// game.switchScreen("minigame");
 // game.switchScreen("gameover");
-minigame.init();
+// minigame.init();
 
 // let myModalElement = document.getElementById("helpModal");
 // let myModal = new bootstrap.Modal(myModalElement);
