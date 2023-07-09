@@ -362,7 +362,7 @@ h2 {
 
 .minigame-board__title {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   background: #8f8681;
   padding: 1rem;
@@ -374,8 +374,19 @@ h2 {
   color: white;
 }
 
-.minigame-board__title button {
-  margin-left: 40rem;
+.minigame-btn-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.minigame-btn-container .help-btn {
+  color: white;
+  border-color: white;
+}
+
+.minigame-btn-container .help-btn:hover {
+  color: #f2ab39;
+  border: 2px solid #f2ab39;
 }
 
 .baseball-scoretable-wrapper {

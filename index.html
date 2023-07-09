@@ -183,9 +183,19 @@
       >
         <div class="minigame-board__title">
           <h2>Mini Game</h2>
-          <button class="quit-btn button">
-            <i class="bi bi-box-arrow-left"></i>
-          </button>
+          <div class="minigame-btn-container">
+            <button
+              class="help-btn button"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#MiniGameHelpModal"
+            >
+              <i class="bi bi-question-lg"></i>
+            </button>
+            <button class="quit-btn button">
+              <i class="bi bi-box-arrow-left"></i>
+            </button>
+          </div>
         </div>
 
         <div class="baseball-scoretable-wrapper">
@@ -279,7 +289,7 @@
         </div>
       </section>
 
-      <!-- Help modal -->
+      <!-- Help modal - Splash screen -->
       <div
         class="modal fade"
         id="helpModal"
@@ -341,6 +351,84 @@
                 </li>
                 <li>Rolling the dice to determine the hit type</li>
               </ul>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Dice number</th>
+                    <th>1 and 2</th>
+                    <th>3 and 4</th>
+                    <th>5</th>
+                    <th>6</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>Hit type</th>
+                    <td>Single</td>
+                    <td>Double</td>
+                    <td>Triple</td>
+                    <td>Home run</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Help modal - Mini game screen -->
+      <div
+        class="modal fade"
+        id="MiniGameHelpModal"
+        tabindex="-1"
+        aria-labelledby="MiniGameHelpModalLabel"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+      >
+        <div
+          class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+        >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="MiniGameHelpModalLabel">
+                How to play the mini game
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p>Start:</p>
+              <ul>
+                <li>
+                  The final score you get from the previous game can be turned
+                  into chances to rolling a dice
+                </li>
+                <li>
+                  Clicking on the roll button, the number rolled will determine
+                  your hit type
+                </li>
+                <li>
+                  According to each hit, the game will automatically calculate
+                  the final score for the baseball game
+                </li>
+                <li>Please refer to the conversion form below</li>
+              </ul>
+
               <table>
                 <thead>
                   <tr>

@@ -69,15 +69,6 @@ const game = {
       game.dealCards();
     });
 
-    // $(".quit-btn").on("click", () => {
-    //   // prevent click till animation done
-    //   if (!game.preventClicks) {
-    //     game.switchScreen("splash");
-    //     game.resetGame();
-    //     game.pauseSound();
-    //   }
-    // });
-
     $(".quit-btn").on("click", () => {
       let myModal = new bootstrap.Modal(game.quitModalElement);
 
@@ -159,6 +150,7 @@ const game = {
     minigame.baseballScore = 0;
     minigame.bases = [0, 0, 0];
     minigame.updateBaseballScore();
+    $(".pause-btn").html(`<i class="bi bi-pause-fill"></i>`);
   },
 
   // Audio control
@@ -673,17 +665,6 @@ const minigame = {
     minigame.diceCounter = game.player.score;
     // minigame.diceCounter = 2;
     minigame.updateDicCounter();
-    // $(".roll").on("click", () => {
-    //   if (minigame.diceCounter > 0) {
-    //     // Prevent double click
-    //     $(".roll").attr("disabled", true);
-    //     // dice face back to 1
-    //     $(".dice").removeAttr("style");
-    //     minigame.diceCounter--;
-    //     minigame.updateDicCounter();
-    //     setTimeout(minigame.randomDice, 550);
-    //   }
-    // });
     $(".roll")
       .off("click")
       .on("click", () => {
@@ -917,9 +898,9 @@ $(() => {
   game.init();
   // minigame.init();
 });
-// game.switchScreen("minigame");
+game.switchScreen("minigame");
 // game.switchScreen("gameover");
-// minigame.init();
+minigame.init();
 
 // let myModalElement = document.getElementById("helpModal");
 // let myModal = new bootstrap.Modal(myModalElement);
