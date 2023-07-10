@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="styles/normalize-fwd.css" />
     <link rel="stylesheet" href="styles/styles.css" />
 
-    <title>Document</title>
+    <title>Animals Baseball League</title>
   </head>
   <body>
     <main>
@@ -67,14 +67,33 @@
             <option value="Joey">Joey Team</option>
             <option value="Piggy">Piggy Team</option>
           </select> -->
-          <button
-            class="help-btn button"
-            type="button"
-            data-bs-toggle="modal"
-            data-bs-target="#helpModal"
-          >
-            <i class="bi bi-question-lg"></i>
-          </button>
+
+          <div class="user-input-box">
+            <label class="visually-hidden user-input" for="teamname"
+              >Team name:
+            </label>
+            <input
+              type="text"
+              id="teamname"
+              pattern="^[a-zA-Z0-9]+$"
+              placeholder="Enter your teame's name"
+            />
+
+            <button
+              class="help-btn button"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#helpModal"
+            >
+              <i class="bi bi-question-lg"></i>
+            </button>
+          </div>
+          <div class="text-warning-box" style="display: none">
+            <span
+              >The team's name is required and can only contain alpha-numeric
+              characters!</span
+            >
+          </div>
           <div>
             <div
               class="btn-group btn-group-lg"
@@ -316,6 +335,7 @@
             <div class="modal-body">
               <p>Start:</p>
               <ul>
+                <li>Entering your team's name</li>
                 <li>Choosing a difficulty mode</li>
               </ul>
               <table>

@@ -13,6 +13,8 @@ const game = {
   totalLevel: 6,
   audio: null,
 
+  warningBoxTimeOutId: null,
+
   // Arrays for game
   drawnCards: [],
   cardPairs: [],
@@ -29,11 +31,13 @@ const game = {
   $min: $(".game-board__minutes"),
   $sec: $(".game-board__seconds"),
   $tenthsSec: $(".game-board__tenths-seconds"),
-  quitModalElement: $("#quitModal"),
+  $quitModalElement: $("#quitModal"),
+  $teamInput: $("#teamname"),
 
   // Player
   player: {
     score: 0,
+    teamName: null,
 
     updateScore() {
       this.score += 1;
@@ -43,6 +47,14 @@ const game = {
     resetScore() {
       this.score = 0;
       $(".score").text(this.score);
+    },
+
+    updateTeamName() {
+      this.teamName = game.$teamInput.val();
+    },
+
+    resetTeamName() {
+      this.teamName = null;
     },
   },
 
@@ -70,7 +82,7 @@ const game = {
     });
 
     $(".quit-btn").on("click", () => {
-      let myModal = new bootstrap.Modal(game.quitModalElement);
+      let myModal = new bootstrap.Modal(game.$quitModalElement);
 
       if (game.currentScreen === "game" && !game.preventClicks) {
         // When user clicks the quit button and on game section, the game is paused, the game was not running
@@ -86,6 +98,7 @@ const game = {
         game.switchScreen("splash");
         game.resetGame();
         game.pauseSound();
+        game.player.resetTeamName();
       }
     });
 
@@ -102,6 +115,7 @@ const game = {
       game.switchScreen("splash");
       game.resetGame();
       game.pauseSound();
+      game.player.resetTeamName();
     });
 
     $(".btn-check").on("click", () => {
@@ -115,10 +129,25 @@ const game = {
     });
 
     $(".start-btn").on("click", () => {
+      clearTimeout(game.warningBoxTimeOutId);
+      // Get the pattern of the input field and create a regular expression object
+      let pattern = new RegExp($("#teamname").attr("pattern"));
+      // Check if the input value matches the pattern
+      if (!pattern.test(game.$teamInput.val())) {
+        $(".text-warning-box").slideDown("fast");
+
+        game.warningBoxTimeOutId = setTimeout(() => {
+          $(".text-warning-box").slideUp("fast");
+        }, 3000);
+        return;
+      }
+
       game.switchScreen("game");
       game.levelTagAnimate();
       game.dealCards();
       game.updateClock();
+      game.player.updateTeamName();
+      game.$teamInput.val(""); // remove input value
     });
   },
 
@@ -662,6 +691,8 @@ const minigame = {
   hit: null,
 
   init() {
+    $(".baseball-guest th").text(game.player.teamName);
+
     minigame.diceCounter = game.player.score;
     // minigame.diceCounter = 2;
     minigame.updateDicCounter();
