@@ -180,6 +180,7 @@ const game = {
     minigame.bases = [0, 0, 0];
     minigame.updateBaseballScore();
     $(".pause-btn").html(`<i class="bi bi-pause-fill"></i>`);
+    $(".text-warning-box").hide();
   },
 
   // Audio control
@@ -417,12 +418,10 @@ const game = {
   pairCards() {
     // clone drawn cards
     game.cardPairs = game.drawnCards.concat(game.drawnCards);
-    console.log(game.cardPairs);
   },
 
   shuffleCards() {
     game.cardPairs = game.cardPairs.sort(() => Math.random() - 0.5);
-    console.log(game.cardPairs);
   },
 
   displayCards() {
@@ -471,7 +470,6 @@ const game = {
         game.flipedCards.push(e.target);
 
         if (game.flipedCards.length === 2) {
-          console.log("check for match");
           game.preventClicks = true;
           game.checkMatch();
         }
@@ -483,8 +481,6 @@ const game = {
     let cardOne = game.flipedCards[0],
       cardTwo = game.flipedCards[1];
     if ($(cardOne).data("num") === $(cardTwo).data("num")) {
-      console.log("card matched");
-
       // make matched card elements unclickable and fade out, but still keep the spaces
       $(".game-board__list-item.flip").off("click").children().fadeOut(400);
       game.playSound("matched");
@@ -494,7 +490,6 @@ const game = {
       game.matchedPairs++;
       if (game.matchedPairs === game.drawnCards.length) {
         // All pairs matched, level up
-        console.log("level up");
         game.handleLevelUpLayout();
         game.player.updateScore();
         if (game.level > game.totalLevel) {
@@ -515,8 +510,6 @@ const game = {
         }
       }
     } else {
-      console.log("card not matched");
-
       setTimeout(game.deselectCards, 1000);
 
       setTimeout(() => {
@@ -569,9 +562,7 @@ const game = {
 
   resetTimer() {
     cancelAnimationFrame(game.animFrameID);
-    console.log(game.totalTime);
     game.timeRemaining = game.totalTime;
-    console.log(game.timeRemaining);
     game.isRunning = false;
     game.updateClock();
   },
@@ -633,7 +624,6 @@ const game = {
     const elapsed = timestamp - game.startTS;
 
     if (game.timeRemaining <= 0) {
-      console.log("time out");
       game.resetTimer();
       game.strikes++;
 
@@ -776,7 +766,6 @@ const minigame = {
   handleBaseballGameResult() {
     if (minigame.diceCounter === 0) {
       if (minigame.baseballScore > 0) {
-        console.log("Win");
         $(".gameover p").text(
           "Congratulations on leading your team to the Animals Baseball League's Annual Championship."
         );
@@ -790,7 +779,6 @@ const minigame = {
         }, 2000);
       } else if (minigame.baseballScore === 0) {
         $(".baseball-score").text(minigame.baseballScore);
-        console.log("try again");
         game.playSound("gameover");
         $(".baseball-home-score").text("1");
         game.resetGame();
@@ -927,7 +915,6 @@ const minigame = {
 
 $(() => {
   game.init();
-  // minigame.init();
 });
 // game.switchScreen("minigame");
 // game.switchScreen("gameover");
